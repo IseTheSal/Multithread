@@ -14,7 +14,7 @@ public class Ship extends Thread {
 
     private int pierId = IdGenerator.getShipId();
     private List<ShipContainer> containerList = new ArrayList<>();
-    public static final int MAX_CAPACITY = 10;
+    public static final int MAX_CAPACITY = 9;
     private PierState state;
 
 

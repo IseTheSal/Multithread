@@ -58,7 +58,7 @@ public class ShipPort {
         try {
             locker.lock();
             int index = ship.containerSize() - 1;
-            while (index > 0) {
+            while (index >= 0) {
                 ShipContainer container = ship.unloadContainer(index);
                 boolean isAdded = warehouse.add(container);
                 if (!isAdded) {
@@ -77,7 +77,7 @@ public class ShipPort {
             locker.lock();
             int i = 0;
             int size = Ship.MAX_CAPACITY;
-            while (i < size - 1) {
+            while (i < size) {
                 Optional<ShipContainer> container = warehouse.remove();
                 if (container.isPresent()) {
                     ShipContainer shipContainer = container.get();

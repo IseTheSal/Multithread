@@ -1,15 +1,15 @@
 package by.learning.multithread.model.entity.impl;
 
-import by.learning.multithread.model.entity.PierState;
+import by.learning.multithread.model.entity.ShipState;
 import by.learning.multithread.model.entity.Ship;
 import by.learning.multithread.model.entity.ShipPort;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ConnectState implements PierState {
+public class ConnectState implements ShipState {
 
-    private static final Logger logger = LogManager.getLogger(PierState.class);
+    private static final Logger logger = LogManager.getLogger(ShipState.class);
 
     private static final ConnectState INSTANCE = new ConnectState();
 

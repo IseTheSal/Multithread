@@ -5,10 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ShipPort {
+
+    //double check
 
     private static final Logger logger = LogManager.getLogger(ShipPort.class);
 
@@ -95,23 +98,30 @@ public class ShipPort {
     }
 
     public void disconnectShip(Ship ship) {
+
+//        try {
         try {
-            locker.lock();
-            Optional<Pier> pierById = getPierById(ship.getPierId());
-            if (pierById.isPresent()) {
-                Pier pier = pierById.get();
-                pier.setShip(null);
-                pierList.remove(pier);
-            } else {
-                logger.log(Level.INFO, "Pier with this id {} does not exist", ship.getPierId());
+            if (locker.tryLock(20, TimeUnit.SECONDS)) {
+                Optional<Pier> pierById = findPierById(ship.getPierId());
+                if (pierById.isPresent()) {
+                    Pier pier = pierById.get();
+                    pier.setShip(null);
+                    pierList.remove(pier);
+                } else {
+                    logger.log(Level.INFO, "Pier with this id {} does not exist", ship.getPierId());
+                }
+                locker.unlock();
             }
-        } finally {
-            logger.log(Level.DEBUG, "Unlocking logger in disconnect for {}", ship.getPierId());
-            locker.unlock();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+//        } finally {
+//            logger.log(Level.DEBUG, "Unlocking logger in disconnect for {}", ship.getPierId());
+//
+//        }
     }
 
-    public Optional<Pier> getPierById(int id) {
+    public Optional<Pier> findPierById(int id) {
         Optional<Pier> result = Optional.empty();
         int i = 0;
         while (i < pierList.size()) {
@@ -121,25 +131,6 @@ public class ShipPort {
             }
         }
         return result;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        ShipPort shipBase = (ShipPort) o;
-
-        return pierList != null ? pierList.equals(shipBase.pierList) : shipBase.pierList == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return pierList != null ? pierList.hashCode() : 0;
     }
 
     @Override

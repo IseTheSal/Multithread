@@ -15,7 +15,7 @@ public class Ship extends Thread {
     private int pierId = IdGenerator.getShipId();
     private List<ShipContainer> containerList = new ArrayList<>();
     public static final int MAX_CAPACITY = 9;
-    private PierState state;
+    private ShipState state;
 
 
     public boolean addContainer(ShipContainer shipContainer) {
@@ -43,7 +43,7 @@ public class Ship extends Thread {
         logger.log(Level.DEBUG, "ship have {} containers", containerSize());
     }
 
-    public void setState(PierState state) {
+    public void setState(ShipState state) {
         this.state = state;
     }
 
